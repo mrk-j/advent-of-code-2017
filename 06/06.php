@@ -5,19 +5,18 @@ $input = file_get_contents('input.txt');
 $banks = array_map('intval', explode("\t", $input));
 
 $configurations = [];
+$configurationFound = false;
 $configurationsInLoop = [];
-$isInLoop = false;
 
 $cycles = 0;
 $cyclesInLoop = 0;
 
 do {
-    if ($isInLoop) {
+    if ($configurationFound) {
         $configurationsInLoop[] = implode('', $banks);
     } else {
         $configurations[] = implode('', $banks);
     }
-
 
     $highestValue = max($banks);
     $key = array_search($highestValue, $banks);
@@ -34,7 +33,7 @@ do {
         $banks[$key]++;
     }
 
-    if (!$isInLoop) {
+    if (!$configurationFound) {
         $cycles++;
     } else {
         $cyclesInLoop++;
@@ -42,18 +41,14 @@ do {
 
     $configuration = implode('', $banks);
 
-    if (count($configurations) % 1000 === 0) {
-        echo count($configurations) . PHP_EOL;
-    }
-
-    if (!$isInLoop && in_array($configuration, $configurations)) {
+    if (!$configurationFound && in_array($configuration, $configurations)) {
         echo "Same configuration after {$cycles} cycles" . PHP_EOL;
 
-        $isInLoop = true;
+        $configurationFound = true;
     }
 } while (
-    (!$isInLoop && !in_array($configuration, $configurations)) ||
-    ($isInLoop && !in_array($configuration, $configurationsInLoop))
+    !$configurationFound ||
+    ($configurationFound && !in_array($configuration, $configurationsInLoop))
 );
 
 echo "Same configuration after {$cyclesInLoop} cycles in loop" . PHP_EOL;
