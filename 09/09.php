@@ -9,30 +9,11 @@ while (($pos = array_search('!', $characters)) !== false) {
     array_splice($characters, $pos, 2);
 }
 
-function array_search_all($needle, $haystack) {
-    $keys = [];
-
-    foreach($haystack as $key => $value) {
-        if($needle == $value) {
-            $keys[] = $key;
-        }
-    }
-
-    return $keys;
-}
-
 // strip all garbage
 $totalGarbage = 0;
 
-while(array_search('<', $characters) !== false) {
-    $openingBrackets = array_search_all('<', $characters);
-    $closingBrackets = array_search_all('>', $characters);
-
-    $currentOpeningBracket = false;
-    $currentClosingBracket = false;
-
-    $firstOpeningBracket = $openingBrackets[0];
-    $firstClosingBracket = $closingBrackets[0];
+while(($firstOpeningBracket = array_search('<', $characters)) !== false) {
+    $firstClosingBracket = array_search('>', $characters);
 
     $totalGarbage += $firstClosingBracket - ($firstOpeningBracket + 1);
 
