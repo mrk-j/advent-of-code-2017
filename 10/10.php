@@ -64,10 +64,9 @@ foreach (range(1, 64) as $round) {
             $replaceWith = array_reverse(array_merge($replaceWithStart, $replaceWithEnd));
 
             $replaceWithStart = array_splice($replaceWith, 0, ($listLength - $pos));
-            $replaceWithEnd = $replaceWith;
 
             array_splice($list, $pos, ($listLength - $pos), $replaceWithStart);
-            array_splice($list, 0, ($length - ($listLength - $pos)), $replaceWithEnd);
+            array_splice($list, 0, ($length - ($listLength - $pos)), $replaceWith);
         }
 
         $pos = ($pos + $length + $skip) % $listLength;
@@ -79,20 +78,14 @@ $parts = array_map(function ($a) {
     $result = $a[0];
 
     foreach (range(1, count($a) - 1) as $i) {
-        $result = $result ^ $a[$i];
+        $result ^= $a[$i];
     }
 
     return $result;
 }, array_chunk($list, 16));
 
 $hash = implode('', array_map(function ($part) {
-    $hex = dechex($part);
-
-    if (strlen($hex) == 1) {
-        $hex = '0' . $hex;
-    }
-
-    return $hex;
+    return str_pad(dechex($part), 2, '0', STR_PAD_LEFT);
 }, $parts));
 
 echo 'The hash is ' . $hash . PHP_EOL;
